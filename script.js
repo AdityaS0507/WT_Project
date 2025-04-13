@@ -9,7 +9,6 @@ const totalIncomeEl = document.getElementById('total-income');
 const totalExpensesEl = document.getElementById('total-expenses');
 const balanceEl = document.getElementById('balance');
 
-// Track totals
 let totalIncome = 0;
 let totalExpenses = 0;
 
@@ -27,6 +26,8 @@ function addIncome() {
     updateSummary();
     incomeDescription.value = '';
     incomeAmount.value = '';
+    sendExpenseToServer(description, amount, "Income", "income");
+
 }
 
 function addExpense() {
@@ -44,6 +45,7 @@ function addExpense() {
     updateSummary();
     expenseDescription.value = '';
     expenseAmount.value = '';
+    sendExpenseToServer(description, amount, category, "expense");
 }
 
 function addTransactionToTable(description, category, amount, type) {
@@ -86,3 +88,65 @@ function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
 }
 
+function sendExpenseToServer(description, amount, category, type) {
+    fetch('save-expense.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            description: description,
+            category: category,
+            amount: amount,
+            type: type
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log("Saved to database!");
+        } else {
+            console.error("Error saving:", data.error);
+        }
+    })
+    .catch(error => {
+        console.error("Fetch error:", error);
+    });
+}
+
+function loadExpensesFromDB() {
+    fetch('get-expenses.php')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(item => {
+                renderTransaction(item.description, item.category, parseFloat(item.amount), item.type);
+            });
+            updateSummary();
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+}
+
+function renderTransaction(description, category, amount, type) {
+    const row = document.createElement('tr');
+
+    row.innerHTML = `
+        <td>${description}</td>
+        <td>${category}</td>
+        <td>${amount.toFixed(2)}</td>
+        <td>${type}</td>
+        <td><button class="delete-btn">Delete</button></td>
+    `;
+
+    row.querySelector('.delete-btn').addEventListener('click', function () {
+        row.remove();
+        updateSummary();
+        // You can extend this to also delete from the DB if you want
+    });
+
+    document.getElementById('transaction-history').appendChild(row);
+}
+
+// Fetch expenses from DB when the page loads
+window.addEventListener('DOMContentLoaded', () => {
+    loadExpensesFromDB();
+});
