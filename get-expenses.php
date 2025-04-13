@@ -1,14 +1,5 @@
 <?php
-$host = "localhost";
-$user = "root";
-$pass = "";
-$dbname = "expense_tracker";
-
-$conn = new mysqli($host, $user, $pass, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include 'db.php';  // Use existing connection instead of duplicating code
 
 $sql = "SELECT * FROM expenses ORDER BY created_at DESC";
 $result = $conn->query($sql);

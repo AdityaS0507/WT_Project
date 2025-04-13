@@ -89,6 +89,8 @@ function toggleDarkMode() {
 }
 
 function sendExpenseToServer(description, amount, category, type) {
+    console.log("Sending to server:", { description, amount, category, type });
+    
     fetch('expense-handler.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -99,8 +101,12 @@ function sendExpenseToServer(description, amount, category, type) {
             type: type
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log("Raw response:", response);
+        return response.json();
+    })
     .then(data => {
+        console.log("Response data:", data);
         if (data.success) {
             console.log("Saved to database!");
         } else {
@@ -138,7 +144,7 @@ function loadExpensesFromDB() {
 
 function renderTransaction(id, description, category, amount, type) {
     const row = document.createElement('tr');
-    row.dataset.id = id; // Store the ID as a data attribute
+    row.dataset.id = id; // Store the ID
     
     row.innerHTML = `
         <td>${description}</td>
@@ -149,14 +155,13 @@ function renderTransaction(id, description, category, amount, type) {
     `;
 
     row.querySelector('.delete-btn').addEventListener('click', function() {
-        deleteTransaction(this, id, amount, type);
+        deleteTransaction(id, row, amount, type);
     });
 
     document.getElementById('transaction-history').appendChild(row);
 }
 
-function deleteTransaction(element, id, amount, type) {
-    // Send delete request to server
+function deleteTransaction(id, row, amount, type) {
     fetch('delete-expense.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -165,19 +170,21 @@ function deleteTransaction(element, id, amount, type) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Update totals and remove from UI
+            // Update the totals
             if (type === 'Income') {
                 totalIncome -= amount;
             } else {
                 totalExpenses -= amount;
             }
-            element.closest('tr').remove();
+            // Remove from the UI
+            row.remove();
             updateSummary();
+            console.log("Transaction deleted successfully");
         } else {
-            console.error("Error deleting:", data.error);
+            console.error("Error deleting transaction:", data.error);
         }
     })
     .catch(error => {
-        console.error("Fetch error:", error);
+        console.error("Error:", error);
     });
 }

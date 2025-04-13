@@ -1,19 +1,23 @@
-<!-- Project/delete-expense.php -->
 <?php
-include 'db.php';  // Ensure this connects to your DB correctly
+include 'db.php';
 
-// Get the data from the client
+file_put_contents('delete_log.txt', json_encode($data));
 $data = json_decode(file_get_contents("php://input"), true);
-$id = $data['id'];  // The ID of the expense to delete
 
-// SQL query to delete the expense by ID
+if (!isset($data['id'])) {
+    echo json_encode(["success" => false, "error" => "No ID provided"]);
+    exit;
+}
+
+$id = $data['id'];
+
 $sql = "DELETE FROM expenses WHERE id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 
 if ($stmt->execute()) {
-    echo json_encode(["success" => true]);  // Return success
+    echo json_encode(["success" => true]);
 } else {
-    echo json_encode(["success" => false, "error" => $stmt->error]);  // Return failure with error message
+    echo json_encode(["success" => false, "error" => $stmt->error]);
 }
 ?>
