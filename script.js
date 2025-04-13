@@ -89,7 +89,7 @@ function toggleDarkMode() {
 }
 
 function sendExpenseToServer(description, amount, category, type) {
-    fetch('save-expense.php', {
+    fetch('expense-handler.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -116,8 +116,18 @@ function loadExpensesFromDB() {
     fetch('get-expenses.php')
         .then(response => response.json())
         .then(data => {
+            // Reset totals
+            totalIncome = 0;
+            totalExpenses = 0;
+            
             data.forEach(item => {
-                renderTransaction(item.description, item.category, parseFloat(item.amount), item.type);
+                // Add to respective total
+                if (item.type === 'Income') {
+                    totalIncome += parseFloat(item.amount);
+                } else {
+                    totalExpenses += parseFloat(item.amount);
+                }
+                renderTransaction(item.id, item.description, item.category, parseFloat(item.amount), item.type);
             });
             updateSummary();
         })
@@ -126,9 +136,10 @@ function loadExpensesFromDB() {
         });
 }
 
-function renderTransaction(description, category, amount, type) {
+function renderTransaction(id, description, category, amount, type) {
     const row = document.createElement('tr');
-
+    row.dataset.id = id; // Store the ID as a data attribute
+    
     row.innerHTML = `
         <td>${description}</td>
         <td>${category}</td>
@@ -137,16 +148,36 @@ function renderTransaction(description, category, amount, type) {
         <td><button class="delete-btn">Delete</button></td>
     `;
 
-    row.querySelector('.delete-btn').addEventListener('click', function () {
-        row.remove();
-        updateSummary();
-        // You can extend this to also delete from the DB if you want
+    row.querySelector('.delete-btn').addEventListener('click', function() {
+        deleteTransaction(this, id, amount, type);
     });
 
     document.getElementById('transaction-history').appendChild(row);
 }
 
-// Fetch expenses from DB when the page loads
-window.addEventListener('DOMContentLoaded', () => {
-    loadExpensesFromDB();
-});
+function deleteTransaction(element, id, amount, type) {
+    // Send delete request to server
+    fetch('delete-expense.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update totals and remove from UI
+            if (type === 'Income') {
+                totalIncome -= amount;
+            } else {
+                totalExpenses -= amount;
+            }
+            element.closest('tr').remove();
+            updateSummary();
+        } else {
+            console.error("Error deleting:", data.error);
+        }
+    })
+    .catch(error => {
+        console.error("Fetch error:", error);
+    });
+}
