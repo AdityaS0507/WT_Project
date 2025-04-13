@@ -1,0 +1,239 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f9fafc;
+    margin: 0;
+    padding: 40px 0; /* Adds space above and below */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top instead of center */
+    min-height: 100vh; /* Full height, but allows scrolling */
+}
+
+
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    max-width: 600px;
+    width: 90%; /* a bit more fluid */
+    box-sizing: border-box;
+}
+
+h1, h2 {
+    color: #333;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+h2 {
+    margin-bottom: 15px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.input-group input,
+.input-group select {
+    width: calc(100% - 10px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: #fff;
+    color: #333;
+}
+
+.button-group button,
+.clear-button-group button {
+    background-color: #6C63FF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.button-group button:hover,
+.clear-button-group button:hover {
+    background-color: #4E47D0;
+}
+
+.table-container {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #6C63FF;
+    color: white;
+}
+
+td {
+    color: #333;
+}
+
+td button {
+    background-color: #4E47D0;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+td button:hover {
+    background-color: #3a34a1;
+}
+
+.summary {
+    background-color: #E0E7FF;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    color: #333;
+}
+
+.summary p {
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+.summary span {
+    font-weight: bold;
+}
+
+body.dark-mode {
+    background-color: #1e1e1e;
+    color: #f4f4f4;
+}
+
+body.dark-mode .container {
+    background-color: #2b2b2b;
+}
+
+body.dark-mode input,
+body.dark-mode select {
+    background-color: #444;
+    color: #fff;
+    border-color: #888;
+}
+
+body.dark-mode table,
+body.dark-mode th,
+body.dark-mode td {
+    background-color: #333;
+    color: #f4f4f4;
+}
+
+/* 🌙 Dark Mode Styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #f0f0f0;
+}
+
+body.dark-mode .container {
+    background-color: #1e1e1e;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode h1,
+body.dark-mode h2 {
+    color: #ffffff;
+}
+
+body.dark-mode input,
+body.dark-mode select {
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border: 1px solid #444;
+}
+
+body.dark-mode table {
+    background-color: #1e1e1e;
+}
+
+body.dark-mode th {
+    background-color: #6C63FF;
+    color: #ffffff;
+}
+
+body.dark-mode td {
+    color: #e0e0e0;
+}
+
+body.dark-mode td button {
+    background-color: #6C63FF;
+    color: white;
+}
+
+body.dark-mode td button:hover {
+    background-color: #4E47D0;
+}
+
+body.dark-mode .summary {
+    background-color: #2f2f4f;
+    color: #ffffff;
+}
+
+body.dark-mode .button-group button,
+body.dark-mode .clear-button-group button {
+    background-color: #6C63FF;
+    color: #ffffff;
+}
+
+body.dark-mode .button-group button:hover,
+body.dark-mode .clear-button-group button:hover {
+    background-color: #4E47D0;
+}
+
+/* Keyframes for fade-in */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply animation to container */
+.container {
+    animation: fadeInUp 0.8s ease-out both;
+}
+
+/* Optional: Animate sections inside too */
+.section, .table-container, .summary {
+    animation: fadeInUp 1s ease-out both;
+    animation-delay: 0.3s;
+}
+
